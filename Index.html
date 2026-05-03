@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModMind AI - Assistant Modding</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Particules de fond -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">⚙️</div>
+            <div class="logo-text">
+                <span class="logo-main">ModMind</span>
+                <span class="logo-sub">AI ASSISTANT</span>
+            </div>
+        </div>
+        <nav class="nav">
+            <button class="nav-btn active" data-section="chat">💬 Chat IA</button>
+            <button class="nav-btn" data-section="tools">🛠️ Outils</button>
+            <button class="nav-btn" data-section="templates">📋 Templates</button>
+            <button class="nav-btn" data-section="about">ℹ️ À propos</button>
+        </nav>
+        <div class="header-status">
+            <div class="status-dot"></div>
+            <span>IA Active</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        
+        <!-- Section Chat -->
+        <section class="section active" id="section-chat">
+            <div class="chat-layout">
+                
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div class="sidebar-header">
+                        <h3>🎮 Contexte Jeu</h3>
+                    </div>
+                    
+                    <div class="game-selector">
+                        <label>Jeu cible</label>
+                        <select id="gameSelect">
+                            <option value="skyrim">The Elder Scrolls V: Skyrim</option>
+                            <option value="minecraft">Minecraft</option>
+                            <option value="fallout4">Fallout 4</option>
+                            <option value="gta5">GTA V</option>
+                            <option value="stardew">Stardew Valley</option>
+                            <option value="witcher3">The Witcher 3</option>
+                            <option value="cyberpunk">Cyberpunk 2077</option>
+                            <option value="rimworld">RimWorld</option>
+                            <option value="factorio">Factorio</option>
+                            <option value="autre">Autre / Général</option>
+                        </select>
+                    </div>
+
+                    <div class="lang-selector">
+                        <label>Langage de mod</label>
+                        <select id="langSelect">
+                            <option value="auto">Auto-détect</option>
+                            <option value="papyrus">Papyrus (Skyrim)</option>
+                            <option value="lua">Lua</option>
+                            <option value="python">Python</option>
+                            <option value="java">Java (Minecraft Forge)</option>
+                            <option value="csharp">C# (Unity Mods)</option>
+                            <option value="json">JSON / Config</option>
+                            <option value="xml">XML</option>
+                            <option value="batch">Batch / Scripts</option>
+                        </select>
+                    </div>
+
+                    <div class="quick-prompts">
+                        <h4>⚡ Suggestions rapides</h4>
+                        <div class="prompt-tags" id="promptTags">
+                            <span class="tag" data-prompt="Comment créer un nouveau sort magique ?">✨ Nouveau sort</span>
+                            <span class="tag" data-prompt="Comment ajouter une nouvelle arme ?">⚔️ Nouvelle arme</span>
+                            <span class="tag" data-prompt="Comment modifier les stats d'un personnage ?">📊 Modifier stats</span>
+                            <span class="tag" data-prompt="Comment créer un nouveau donjon ?">🏰 Nouveau donjon</span>
+                            <span class="tag" data-prompt="Comment déboguer mon mod ?">🐛 Déboguer mod</span>
+                            <span class="tag" data-prompt="Comment optimiser les performances de mon mod ?">⚡ Optimiser</span>
+                            <span class="tag" data-prompt="Comment créer un menu de configuration ?">⚙️ Menu config</span>
+                            <span class="tag" data-prompt="Comment publier mon mod sur Nexus Mods ?">🚀 Publier mod</span>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Messages</span>
+                            <span class="stat-value" id="msgCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Tokens estimés</span>
+                            <span class="stat-value" id="tokenCount">0</span>
+                        </div>
+                    </div>
+
+                    <button class="clear-btn" id="clearChat">🗑️ Effacer conversation</button>
+                </aside>
+
+                <!-- Zone de Chat -->
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="chat-title">
+                            <span class="ai-avatar">🤖</span>
+                            <div>
+                                <h2>ModMind AI</h2>
+                                <p class="ai-subtitle">Powered by DeepSeek V4 Pro • Spécialiste Modding</p>
+                            </div>
+                        </div>
+                        <div class="chat-actions">
+                            <button class="icon-btn" id="exportChat" title="Exporter la conversation">📥</button>
+                            <button class="icon-btn" id="copyLast" title="Copier dernière réponse">📋</button>
+                        </div>
+                    </div>
+
+                    <div class="messages" id="messages">
+                        <!-- Message de bienvenue -->
+                        <div class="message ai-message welcome-message">
+                            <div class="message-avatar">🤖</div>
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="sender">ModMind AI</span>
+                                    <span class="timestamp">Maintenant</span>
+                                </div>
+                                <div class="message-text">
+                                    <p>👋 Bienvenue dans <strong>ModMind AI</strong> - Votre assistant intelligent pour le modding de jeux vidéo !</p>
+                                    <br>
+                                    <p>Je peux vous aider avec :</p>
+                                    <ul>
+                                        <li>🔧 <strong>Création de mods</strong> - Code, scripts, configs</li>
+                                        <li>🐛 <strong>Débogage</strong> - Identifier et corriger les erreurs</li>
+                                        <li>📚 <strong>Documentation</strong> - Guides et tutoriels</li>
+                                        <li>⚡ <strong>Optimisation</strong> - Améliorer les performances</li>
+                                        <li>🎨 <strong>Assets</strong> - Textures, modèles, sons</li>
+                                        <li>🚀 <strong>Publication</strong> - Nexus Mods, Steam Workshop</li>
+                                    </ul>
+                                    <br>
+                                    <p>Sélectionnez votre jeu dans le panneau latéral et posez votre question !</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="typing-indicator" id="typingIndicator" style="display:none">
+                        <div class="message-avatar">🤖</div>
+                        <div class="typing-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                        <span class="typing-text">ModMind réfléchit...</span>
+                    </div>
+
+                    <div class="input-area">
+                        <div class="input-wrapper">
+                            <textarea 
+                                id="userInput" 
+                                placeholder="Demandez de l'aide pour votre mod... (Ex: Comment créer une épée légendaire dans Skyrim ?)"
+                                rows="1"
+                            ></textarea>
+                            <div class="input-actions">
+                                <button class="attach-btn" id="codeMode" title="Mode code" onclick="toggleCodeMode()">
+                                    <span>{ }</span>
+                                </button>
+                                <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                                    <span class="send-icon">▶</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="input-footer">
+                            <span id="charCount">0 / 4000</span>
+                            <span>Entrée pour envoyer • Shift+Entrée pour nouvelle ligne</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Outils -->
+        <section class="section" id="section-tools">
+            <div class="tools-grid">
+                <div class="tool-card" onclick="useTool('nexus-formatter')">
+                    <div class="tool-icon">📦</div>
+                    <h3>Formateur Nexus</h3>
+                    <p>Génère automatiquement la description BBCode pour Nexus Mods</p>
+                    <button class="tool-btn">Utiliser</button>
+                </div>
+                <div class="tool-card" onclick="useTool('bug-analyzer')">
+                    <div class="tool-icon">🔍</div>
+                    <h3>Analyseur de Bugs</h3>
+                    <p>Collez votre log d'erreur pour une analyse automatique</p>
+                    <button class="tool-btn">Analyser</button>
+                </div>
+                <div class="tool-card" onclick="useTool('code-converter')">
+                    <div class="tool-icon">🔄</div>
+                    <h3>Convertisseur de Code</h3>
+                    <p>Convertit du code entre différents langages de modding</p>
+                    <button class="tool-btn">Convertir</button>
+                </div>
+                <div class="tool-card" onclick="useTool('readme-gen')">
+                    <div class="tool-icon">📄</div>
+                    <h3>Générateur README</h3>
+                    <p>Crée un README professionnel pour votre mod</p>
+                    <button class="tool-btn">Générer</button>
+                </div>
+                <div class="tool-card" onclick="useTool('balancing')">
+                    <div class="tool-icon">⚖️</div>
+                    <h3>Équilibrage</h3>
+                    <p>Analyse et suggère des ajustements d'équilibrage pour vos stats</p>
+                    <button class="tool-btn">Équilibrer</button>
+                </div>
+                <div class="tool-card" onclick="useTool('lore-gen')">
+                    <div class="tool-icon">📖</div>
+                    <h3>Générateur de Lore</h3>
+                    <p>Crée de l'histoire et du lore cohérent pour votre mod</p>
+                    <button class="tool-btn">Créer</button>
+                </div>
+            </div>
+
+            <!-- Tool Modal -->
+            <div class="tool-modal" id="toolModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="modalTitle">Outil</h3>
+                        <button onclick="closeModal()">✕</button>
+                    </div>
+                    <div class="modal-body" id="modalBody">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Templates -->
+        <section class="section" id="section-templates">
+            <div class="templates-header">
+                <h2>📋 Templates de Mods</h2>
+                <p>Démarrez rapidement avec nos templates prêts à l'emploi</p>
+            </div>
+            <div class="templates-grid">
+                <div class="template-card" data-game="skyrim" data-type="spell">
+                    <div class="template-badge">Skyrim</div>
+                    <h3>⚡ Nouveau Sort</h3>
+                    <p>Template complet pour créer un nouveau sort magique avec effets et sons</p>
+                    <div class="template-tags">
+                        <span>Papyrus</span>
+                        <span>CK</span>
+                        <span>Débutant</span>
+                    </div>
+                    <button onclick="loadTemplate('skyrim-spell')">Charger Template</button>
+                </div>
+                <div class="template-card" data-game="minecraft" data-type="item">
+                    <div class="template-badge minecraft">Minecraft</div>
+                    <h3>🗡️ Nouvel Item Forge</h3>
+                    <p>Structure complète pour ajouter un item custom avec Minecraft Forge</p>
+                    <div class="template-tags">
+                        <span>Java</span>
+                        <span>Forge</span>
+                        <span>Intermédiaire</span>
+                    </div>
+                    <button onclick="loadTemplate('mc-item')">Charger Template</button>
+                </div>
+                <div class="template-card" data-game="stardew" data-type="mod">
+                    <div class="template-badge stardew">Stardew Valley</div>
+                    <h3>🌾 Mod SMAPI</h3>
+                    <p>Template de base pour créer un mod Stardew Valley avec SMAPI</p>
+                    <div class="template-tags">
+                        <span>C#</span>
+                        <span>SMAPI</span>
+                        <span>Débutant</span>
+                    </div>
+                    <button onclick="loadTemplate('stardew-smapi')">Charger Template</button>
+                </div>
+                <div class="template-card" data-game="factorio" data-type="mod">
+                    <div class="template-badge factorio">Factorio</div>
+                    <h3>⚙️ Nouveau Bâtiment</h3>
+                    <p>Template pour ajouter un nouveau bâtiment/entité dans Factorio</p>
+                    <div class="template-tags">
+                        <span>Lua</span>
+                        <span>Avancé</span>
+                    </div>
+                    <button onclick="loadTemplate('factorio-building')">Charger Template</button>
+                </div>
+                <div class="template-card" data-game="gta5" data-type="script">
+                    <div class="template-badge gta">GTA V</div>
+                    <h3>🚗 Script ASI</h3>
+                    <p>Squelette de base pour créer un script ASI pour GTA V</p>
+                    <div class="template-tags">
+                        <span>C++</span>
+                        <span>ASI</span>
+                        <span>Avancé</span>
+                    </div>
+                    <button onclick="loadTemplate('gta-asi')">Charger Template</button>
+                </div>
+                <div class="template-card" data-game="rimworld" data-type="xml">
+                    <div class="template-badge rimworld">RimWorld</div>
+                    <h3>🔫 Nouvelle Arme XML</h3>
+                    <p>Définition XML complète pour une nouvelle arme dans RimWorld</p>
+                    <div class="template-tags">
+                        <span>XML</span>
+                        <span>Débutant</span>
+                    </div>
+                    <button onclick="loadTemplate('rimworld-weapon')">Charger Template</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section À propos -->
+        <section class="section" id="section-about">
+            <div class="about-container">
+                <div class="about-hero">
+                    <div class="about-logo">⚙️</div>
+                    <h1>ModMind AI</h1>
+                    <p class="about-tagline">L'intelligence artificielle au service des moddeurs</p>
+                </div>
+                <div class="about-grid">
+                    <div class="about-card">
+                        <h3>🤖 Technologie</h3>
+                        <p>Propulsé par <strong>DeepSeek V4 Pro</strong> via l'API NVIDIA NIM, ModMind AI offre une expertise approfondie dans tous les aspects du modding de jeux vidéo.</p>
+                    </div>
+                    <div class="about-card">
+                        <h3>🎮 Jeux Supportés</h3>
+                        <p>Compatible avec <strong>+50 jeux</strong> populaires incluant Skyrim, Minecraft, Fallout, GTA V, Stardew Valley, et bien d'autres.</p>
+                    </div>
+                    <div class="about-card">
+                        <h3>💡 Capacités</h3>
+                        <p>Génération de code, débogage, documentation, optimisation, création de lore, et assistance à la publication sur les plateformes de mods.</p>
+                    </div>
+                    <div class="about-card">
+                        <h3>🔒 Confidentialité</h3>
+                        <p>Aucune conversation n'est sauvegardée sur nos serveurs. Tout reste en local dans votre navigateur.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Code Preview Modal -->
+    <div class="code-modal" id="codeModal">
+        <div class="code-modal-content">
+            <div class="code-modal-header">
+                <span id="codeModalTitle">Code</span>
+                <div>
+                    <button onclick="copyCode()" class="copy-code-btn">📋 Copier</button>
+                    <button onclick="closeCodeModal()">✕</button>
+                </div>
+            </div>
+            <pre id="codeModalContent"><code></code></pre>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
